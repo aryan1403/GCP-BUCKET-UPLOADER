@@ -1,4 +1,5 @@
 sudo apt install git -y
+git clone https://github.com/aryan1403/GCP-BUCKET-UPLOADER
 sudo apt install -y python3-venv python3-pip
 Edit .env file and make gcpstoragekey.json
 python3 -m venv venv
