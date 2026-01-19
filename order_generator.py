@@ -30,7 +30,7 @@ def main():
 
     # Same file always
     local_file = os.path.join(local_dir, "orders.csv")
-    gcs_object = f"{gcs_prefix}/orders.csv"
+    gcs_object = f"{gcs_prefix}/orders"
 
     os.makedirs(local_dir, exist_ok=True)
 
@@ -53,15 +53,16 @@ def main():
         with open(local_file, "a", newline="") as f:
             writer = csv.writer(f)
             for _ in range(rows_per_minute):
-                writer.writerow([
-                    random.randint(100000, 999999),
-                    random.choice(["IN", "US", "UK", "DE"]),
-                    random.randint(100, 5000),
-                    datetime.utcnow().isoformat()
-                ])
+                for _ in range(10):
+                    writer.writerow([
+                        random.randint(100000, 999999),
+                        random.choice(["IN", "US", "UK", "DE"]),
+                        random.randint(100, 5000),
+                        datetime.utcnow().isoformat()
+                    ])
 
         # Upload the same file again (overwrite object in GCS)
-        blob = bucket.blob(gcs_object)
+        blob = bucket.blob(gcs_object + datetime.utcnow().strftime("_%Y%m%d_%H%M%S") + ".csv")
         blob.upload_from_filename(local_file)
 
         print(f"Updated & uploaded: {datetime.utcnow().isoformat()}")
